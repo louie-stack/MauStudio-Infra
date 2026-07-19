@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "motion/react";
 import { Layers } from "lucide-react";
 import { useStore } from "@/lib/store";
 import type { SystemStatus } from "@/lib/types";
@@ -62,10 +63,16 @@ export default function SystemsPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-5 px-8 py-8 lg:grid-cols-2">
-        {(mounted ? shown : []).map((sys) => {
+        {(mounted ? shown : []).map((sys, i) => {
           const bornClient = clients.find((c) => c.id === sys.bornFrom);
           return (
-            <Card key={sys.id} className="flex flex-col p-7">
+            <motion.div
+              key={sys.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+            >
+            <Card className="flex h-full flex-col p-7">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-md border border-line-2 bg-panel-2">
@@ -129,6 +136,7 @@ export default function SystemsPage() {
                 {sys.demo && <span className="mono-meta text-ink-4">{sys.demo}</span>}
               </div>
             </Card>
+            </motion.div>
           );
         })}
       </div>

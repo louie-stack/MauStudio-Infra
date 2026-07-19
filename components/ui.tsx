@@ -2,6 +2,7 @@
 
 import { cn, initials } from "@/lib/utils";
 import type { Priority } from "@/lib/types";
+import { AgentSigil, sigilIdForName } from "@/components/agent-art";
 
 /* --- Mono section label ------------------------------------------------ */
 export function Label({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -98,6 +99,10 @@ export function Avatar({
   kind?: "human" | "agent";
   size?: number;
 }) {
+  if (kind === "agent") {
+    const sid = sigilIdForName(name);
+    if (sid) return <AgentSigil id={sid} size={size} radius={Math.round(size * 0.28)} />;
+  }
   return (
     <span
       className={cn(

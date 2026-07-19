@@ -58,6 +58,27 @@ export function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
+/** Deterministic pseudo-random series from a string seed (stable SSR↔client). */
+export function series(seed: string, n: number, min = 0, max = 100): number[] {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const out: number[] = [];
+  let prev = (Math.abs(h) % 100) / 100;
+  for (let i = 0; i < n; i++) {
+    h ^= h << 13;
+    h ^= h >>> 17;
+    h ^= h << 5;
+    const r = (Math.abs(h) % 1000) / 1000;
+    // smooth a little so it reads like a trend, not noise
+    prev = prev * 0.55 + r * 0.45;
+    out.push(Math.round(min + prev * (max - min)));
+  }
+  return out;
+}
+
 export function monthsSince(iso: string) {
   const TODAY = Date.UTC(2026, 6, 19);
   const start = Date.parse(iso);

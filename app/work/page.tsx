@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { useUI } from "@/lib/ui";
 import type { ColumnId, Task } from "@/lib/types";
 import { useMounted } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
@@ -15,6 +16,9 @@ export default function WorkPage() {
   const clients = useStore((s) => s.clients);
   const tasks = useStore((s) => s.tasks);
 
+  const taskIntent = useUI((s) => s.taskIntent);
+  const consumeTask = useUI((s) => s.consumeTask);
+
   const [filter, setFilter] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
@@ -25,6 +29,14 @@ export default function WorkPage() {
     setDefaultCol(col);
     setDialogOpen(true);
   }
+
+  // Open the task dialog when the command palette requests it.
+  useEffect(() => {
+    if (taskIntent) {
+      openNew(taskIntent.column);
+      consumeTask();
+    }
+  }, [taskIntent, consumeTask]);
   function openEdit(t: Task) {
     setEditing(t);
     setDialogOpen(true);

@@ -2,13 +2,24 @@
 
 import Link from "next/link";
 import { ArrowUpRight, TrendingUp } from "lucide-react";
+import { motion } from "motion/react";
 import { useStore } from "@/lib/store";
 import { COLUMNS } from "@/lib/types";
-import { cn, currency, relTime, useMounted } from "@/lib/utils";
+import { cn, currency, relTime, series, useMounted } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { Avatar, Card, Label, Meter, PriorityTag, StatusDot } from "@/components/ui";
+import { AreaChart } from "@/components/spark";
+import { CountUp } from "@/components/count-up";
 
 const P_RANK = { critical: 0, high: 1, med: 2, low: 3 } as const;
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return "burning the midnight oil";
+  if (h < 12) return "good morning";
+  if (h < 18) return "good afternoon";
+  return "good evening";
+}
 
 export default function OverviewPage() {
   const mounted = useMounted();
@@ -20,10 +31,7 @@ export default function OverviewPage() {
   const mrr = activeClients.reduce((s, c) => s + c.mrr, 0);
   const liveSystems = systems.filter((s) => s.status === "live");
 
-  const colCounts = COLUMNS.map((c) => ({
-    ...c,
-    n: tasks.filter((t) => t.column === c.id).length,
-  }));
+  const colCounts = COLUMNS.map((c) => ({ ...c, n: tasks.filter((t) => t.column === c.id).length }));
   const total = tasks.length || 1;
 
   const focus = [...tasks]
@@ -31,12 +39,18 @@ export default function OverviewPage() {
     .sort((a, b) => P_RANK[a.priority] - P_RANK[b.priority] || (a.due ?? "9").localeCompare(b.due ?? "9"))
     .slice(0, 5);
 
-  const stats = [
-    { label: "Active Clients", value: String(activeClients.length), sub: `${clients.length} total`, meter: (activeClients.length / clients.length) * 100 },
-    { label: "Work In Progress", value: String(wip.length), sub: `${tasks.length} tasks tracked`, meter: (wip.length / total) * 100 },
-    { label: "Agents Live", value: `${liveAgents.length}/${agents.length}`, sub: "operating now", meter: (liveAgents.length / agents.length) * 100 },
-    { label: "Monthly Value", value: currency(mrr), sub: "active retainers", meter: 76 },
-    { label: "Systems Live", value: String(liveSystems.length), sub: `${systems.length} in library`, meter: (liveSystems.length / systems.length) * 100 },
+  // 14-day studio throughput (deterministic, reads as a trend)
+  const flow = series("studio-throughput", 14, 3, 21);
+  const flowTotal = flow.reduce((a, b) => a + b, 0);
+  const flowAvg = Math.round(flowTotal / flow.length);
+  const flowPeak = Math.max(...flow);
+
+  const stats: { label: string; node: React.ReactNode; sub: string; meter: number; up?: boolean }[] = [
+    { label: "Active Clients", node: <CountUp value={activeClients.length} />, sub: `${clients.length} total`, meter: (activeClients.length / clients.length) * 100 },
+    { label: "Work In Progress", node: <CountUp value={wip.length} />, sub: `${tasks.length} tasks tracked`, meter: (wip.length / total) * 100 },
+    { label: "Agents Live", node: `${liveAgents.length}/${agents.length}`, sub: "operating now", meter: (liveAgents.length / agents.length) * 100 },
+    { label: "Monthly Value", node: <CountUp value={mrr} format={currency} />, sub: "active retainers", meter: 76, up: true },
+    { label: "Systems Live", node: <CountUp value={liveSystems.length} />, sub: `${systems.length} in library`, meter: (liveSystems.length / systems.length) * 100 },
   ];
 
   return (
@@ -46,38 +60,72 @@ export default function OverviewPage() {
         title="Studio at a glance."
         lead="Everything the studio is running: clients, work in flight, and the agents doing the work, in one operating surface."
       >
-        <span className="mono-meta hidden items-center gap-2 rounded-full border border-line-2 px-3 py-2 md:inline-flex">
-          <StatusDot tone="live" pulse />
-          All systems operational
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span className="mono-meta text-ink-3">{mounted ? `// ${greeting()}` : "//"}</span>
+          <span className="mono-meta inline-flex items-center gap-2 rounded-full border border-line-2 px-3 py-2">
+            <StatusDot tone="live" pulse />
+            All systems operational
+          </span>
+        </div>
       </PageHeader>
 
       <div className="px-8 py-8">
         {/* Stat tiles */}
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3 lg:grid-cols-5">
-          {stats.map((s, i) => (
+        <motion.div
+          className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3 lg:grid-cols-5"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {stats.map((s) => (
             <div key={s.label} className="bg-panel p-5">
               <Label>{s.label}</Label>
               <div className="mt-4 flex items-end gap-2">
-                <span className="display text-[38px] font-semibold tabular-nums">
-                  {mounted ? s.value : "·"}
-                </span>
+                <span className="display text-[38px] font-semibold tabular-nums">{mounted ? s.node : "·"}</span>
               </div>
               <div className="mt-3">
                 <Meter value={mounted ? s.meter : 0} />
               </div>
               <div className="mono-meta mt-2 flex items-center gap-1.5 text-ink-4">
-                {i === 3 && <TrendingUp size={11} strokeWidth={2} />}
+                {s.up && <TrendingUp size={11} strokeWidth={2} className="text-accent" />}
                 {s.sub}
               </div>
             </div>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Throughput */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <Card className="mt-6 p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <Label>14-Day Throughput</Label>
+                <h3 className="mt-2 text-lg font-semibold tracking-tight">Work shipped &amp; advanced</h3>
+              </div>
+              <div className="flex items-center gap-6">
+                {[
+                  ["Total", String(flowTotal)],
+                  ["Avg / day", String(flowAvg)],
+                  ["Peak", String(flowPeak)],
+                ].map(([k, v]) => (
+                  <div key={k} className="text-right">
+                    <Label>{k}</Label>
+                    <div className="mt-1 text-xl font-semibold tabular-nums">{mounted ? v : "·"}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-4">{mounted && <AreaChart points={flow} uid="throughput" h={140} />}</div>
+          </Card>
+        </motion.div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Left column: pipeline + focus */}
           <div className="space-y-6 lg:col-span-2">
-            {/* Pipeline */}
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -89,7 +137,6 @@ export default function OverviewPage() {
                 </Link>
               </div>
 
-              {/* distribution bar */}
               <div className="mt-6 flex h-2 w-full overflow-hidden rounded-full bg-white/10">
                 {colCounts.map((c, i) => (
                   <div
@@ -114,7 +161,6 @@ export default function OverviewPage() {
               </div>
             </Card>
 
-            {/* Focus list */}
             <Card className="overflow-hidden">
               <div className="flex items-center justify-between px-6 pt-6">
                 <div>
@@ -129,7 +175,7 @@ export default function OverviewPage() {
                     <Link
                       key={t.id}
                       href="/work"
-                      className="flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-panel-2"
+                      className="flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-white/[0.02]"
                     >
                       <PriorityTag p={t.priority} withLabel={false} />
                       <span className="min-w-0 flex-1 truncate text-[14px] font-medium">{t.title}</span>

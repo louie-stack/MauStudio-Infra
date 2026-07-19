@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Plus, X } from "lucide-react";
+// motion is used for the detail drawer and card entrance
 import { useStore } from "@/lib/store";
+import { useUI } from "@/lib/ui";
 import type { Client, ClientStatus } from "@/lib/types";
 import { cn, currency, monthsSince, useMounted } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
@@ -24,8 +26,17 @@ export default function ClientsPage() {
   const systems = useStore((s) => s.systems);
   const tasks = useStore((s) => s.tasks);
   const cycleClientStatus = useStore((s) => s.updateClient);
+  const clientIntent = useUI((s) => s.clientIntent);
+  const consumeClient = useUI((s) => s.consumeClient);
   const [selected, setSelected] = useState<Client | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+
+  useEffect(() => {
+    if (clientIntent) {
+      setAddOpen(true);
+      consumeClient();
+    }
+  }, [clientIntent, consumeClient]);
 
   const sel = selected ? clients.find((c) => c.id === selected.id) ?? null : null;
 
@@ -41,10 +52,16 @@ export default function ClientsPage() {
       </PageHeader>
 
       <div className="grid grid-cols-1 gap-5 px-8 py-8 md:grid-cols-2 xl:grid-cols-3">
-        {(mounted ? clients : []).map((c) => {
+        {(mounted ? clients : []).map((c, i) => {
           const openTasks = tasks.filter((t) => t.clientId === c.id && t.column !== "shipped").length;
           return (
-            <Card key={c.id} interactive onClick={() => setSelected(c)} className="flex flex-col p-6">
+            <motion.div
+              key={c.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+            >
+            <Card interactive onClick={() => setSelected(c)} className="flex h-full flex-col p-6">
               <div className="flex items-start justify-between">
                 <div className="glass flex h-11 w-11 items-center justify-center rounded-md font-mono text-[15px] font-medium text-ink">
                   {c.code}
@@ -78,6 +95,7 @@ export default function ClientsPage() {
                 </div>
               </div>
             </Card>
+            </motion.div>
           );
         })}
       </div>

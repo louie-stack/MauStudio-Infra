@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Bot, Boxes, LayoutDashboard, SquareKanban, Users } from "lucide-react";
+import { Bot, Boxes, LayoutDashboard, Search, SquareKanban, Users } from "lucide-react";
 import { cn, useMounted } from "@/lib/utils";
 import { StatusDot } from "@/components/ui";
+import { useUI } from "@/lib/ui";
+import { CommandPalette } from "@/components/command-palette";
 
 const NAV = [
   { href: "/", label: "Overview", code: "00", icon: LayoutDashboard },
@@ -33,6 +35,19 @@ function Clock() {
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const section = NAV.find((n) => (n.href === "/" ? pathname === "/" : pathname.startsWith(n.href)));
+  const togglePalette = useUI((s) => s.togglePalette);
+  const openPalette = useUI((s) => s.openPalette);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        togglePalette();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [togglePalette]);
 
   return (
     <div className="flex min-h-screen">
@@ -40,9 +55,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <aside className="fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-line bg-panel/80 backdrop-blur-xl">
         {/* Brand */}
         <div className="flex items-center gap-3 border-b border-line px-5 py-5">
-          <div className="grad-cta flex h-9 w-9 items-center justify-center rounded-md font-mono text-[13px] font-semibold">
-            M/
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/mp-monogram.svg" alt="Mau Studio" width={38} height={38} className="rounded-lg" />
           <div className="leading-none">
             <div className="text-[15px] font-semibold tracking-tight">Mau Studio</div>
             <div className="mono-label mt-1">Studio OS</div>
@@ -111,7 +125,15 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <span className="text-ink-2">{section?.label ?? "·"}</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="mono-meta hidden text-ink-4 sm:inline">41.8781°N / 87.6298°W</span>
+            <button
+              onClick={openPalette}
+              className="group flex items-center gap-2 rounded-md border border-line-2 bg-white/[0.02] py-1.5 pl-2.5 pr-2 text-ink-3 transition-colors hover:border-line-3 hover:text-ink-2"
+            >
+              <Search size={13} strokeWidth={1.75} />
+              <span className="mono-meta">Search</span>
+              <kbd className="rounded border border-line-2 bg-white/[0.03] px-1.5 py-0.5 font-mono text-[10px] text-ink-3">⌘K</kbd>
+            </button>
+            <span className="mono-meta hidden text-ink-4 lg:inline">41.8781°N / 87.6298°W</span>
             <span className="h-3.5 w-px bg-line-2" />
             <span className="mono-meta text-ink-3">STUDIO OS</span>
           </div>
@@ -119,6 +141,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
         <main className="flex-1">{children}</main>
       </div>
+
+      <CommandPalette />
     </div>
   );
 }
