@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mau Studio OS
 
-## Getting Started
+The studio's operating surface. One place to run clients, work, AI agents, and the
+productized systems the studio repurposes across engagements.
 
-First, run the development server:
+Built as an operator console in Mau's visual language: strict monochrome, warm paper,
+hairline structure, and mono "systems" microtype.
+
+## Pages
+
+| Route       | What it is                                                                       |
+| ----------- | -------------------------------------------------------------------------------- |
+| `/`         | **Command Center**: studio at a glance, KPIs, pipeline, live agents, activity    |
+| `/work`     | **The Board**: Trello-style kanban, drag work across stages, per-client filter   |
+| `/clients`  | **The Roster**: client cards + slide-over detail with health, systems, open work |
+| `/systems`  | **Systems**: the productized / repurposable builds library with reusability      |
+| `/agents`   | **Agents**: the AI workforce; toggle each agent live / idle / paused             |
+
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** with a custom monochrome token set (`app/globals.css`)
+- **zustand** + `localStorage` persistence, so every edit survives a refresh
+- **@dnd-kit** for the drag-and-drop board
+- **Motion** (Framer Motion) for dialogs and drawers
+- **Geist Sans / Geist Mono**, **lucide-react** icons
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+npm run build      # production build
+npm run start      # serve the production build
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Data & state
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app ships with realistic seed data (`lib/seed.ts`) so it feels alive on first load.
+All state lives client-side in a persisted zustand store (`lib/store.ts`) under the key
+`mau-studio-os-v1`. There is no backend yet: this is the cockpit shell, ready to be wired
+to real services (agents, billing, project data) as those come online.
 
-## Learn More
+To wipe local edits back to seed, clear that key from `localStorage`, or run
+`useStore.getState().resetAll()` in the console.
 
-To learn more about Next.js, take a look at the following resources:
+## Project layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/            route segments (overview, work, clients, systems, agents)
+components/      shell, page header, UI primitives, kanban, dialogs
+lib/            types, seed data, store, formatting utilities
+```
