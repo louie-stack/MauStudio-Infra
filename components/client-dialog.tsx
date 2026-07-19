@@ -8,7 +8,7 @@ import type { Client, ClientStatus } from "@/lib/types";
 import { Label } from "@/components/ui";
 
 const field =
-  "w-full rounded-md border border-line-2 bg-panel px-3 py-2 text-[14px] outline-none transition-colors focus:border-ink placeholder:text-ink-4";
+  "w-full rounded-md border border-line-2 bg-white/[0.03] px-3 py-2 text-[14px] outline-none transition-colors focus:border-accent placeholder:text-ink-4";
 const STATUSES: ClientStatus[] = ["active", "onboarding", "paused", "archived"];
 
 export function ClientDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -41,7 +41,7 @@ export function ClientDialog({ open, onClose }: { open: boolean; onClose: () => 
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/20 p-4 backdrop-blur-sm sm:p-10"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm sm:p-10"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={onClose}
         >
           <motion.div
@@ -97,7 +97,7 @@ export function ClientDialog({ open, onClose }: { open: boolean; onClose: () => 
             </div>
             <div className="flex items-center justify-end gap-2 border-t border-line px-6 py-4">
               <button onClick={onClose} className="rounded-md px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-ink-2 hover:bg-panel-2">Cancel</button>
-              <button onClick={save} className="rounded-md bg-ink px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-paper hover:opacity-90">Add Client</button>
+              <button onClick={save} className="grad-cta rounded-md px-4 py-2 font-mono text-[11px] uppercase tracking-wider">Add Client</button>
             </div>
           </motion.div>
         </motion.div>

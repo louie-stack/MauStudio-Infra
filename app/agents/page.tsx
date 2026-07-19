@@ -58,7 +58,7 @@ export default function AgentsPage() {
             <Card key={a.id} className="p-7">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-ink font-mono text-[16px] text-paper">
+                  <div className="grad-cta flex h-12 w-12 items-center justify-center rounded-lg font-mono text-[16px] font-semibold">
                     {a.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
@@ -69,7 +69,7 @@ export default function AgentsPage() {
 
                 <button
                   onClick={() => cycleAgent(a.id)}
-                  className="flex items-center gap-2 rounded-full border border-line-2 px-3 py-1.5 transition-colors hover:border-ink"
+                  className="flex items-center gap-2 rounded-full border border-line-2 px-3 py-1.5 transition-colors hover:border-accent/40"
                   title="Cycle status"
                 >
                   <StatusDot tone={TONE[a.status]} pulse={a.status === "live"} />

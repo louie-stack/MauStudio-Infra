@@ -19,7 +19,7 @@ export function StatusDot({
   className?: string;
 }) {
   const styles: Record<string, string> = {
-    live: "bg-ink",
+    live: "bg-accent glow-dot",
     idle: "bg-ink-3",
     paused: "bg-transparent border border-line-3",
     muted: "bg-ink-4",
@@ -55,8 +55,8 @@ export function Chip({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors",
         active
-          ? "border-ink bg-ink text-paper"
-          : "border-line-2 text-ink-2 hover:border-ink hover:text-ink",
+          ? "border-accent/40 bg-accent/10 text-accent"
+          : "border-line-2 text-ink-2 hover:border-line-3 hover:text-ink",
         onClick && "cursor-pointer",
         className,
       )}
@@ -78,7 +78,7 @@ export function PriorityTag({ p, withLabel = true }: { p: Priority; withLabel?: 
         {[1, 2, 3, 4].map((i) => (
           <span
             key={i}
-            className={cn("w-[3px] rounded-[1px]", i <= level ? "bg-ink" : "bg-line-2")}
+            className={cn("w-[3px] rounded-[1px]", i <= level ? "bg-accent" : "bg-line-2")}
             style={{ height: `${4 + i * 2}px` }}
           />
         ))}
@@ -102,7 +102,9 @@ export function Avatar({
     <span
       className={cn(
         "inline-flex shrink-0 items-center justify-center font-mono uppercase",
-        kind === "agent" ? "rounded-md bg-ink text-paper" : "rounded-full border border-line-2 bg-panel-2 text-ink-2",
+        kind === "agent"
+          ? "rounded-md grad-cta font-semibold"
+          : "rounded-full border border-line-2 bg-white/[0.04] text-ink-2",
       )}
       style={{ width: size, height: size, fontSize: size * 0.34, letterSpacing: "0.02em" }}
       title={`${name}${kind === "agent" ? " · agent" : ""}`}
@@ -115,9 +117,9 @@ export function Avatar({
 /* --- Meter (health / reusability / rate) ------------------------------ */
 export function Meter({ value, className }: { value: number; className?: string }) {
   return (
-    <span className={cn("relative block h-[3px] w-full overflow-hidden rounded-full bg-line-2", className)}>
+    <span className={cn("relative block h-[3px] w-full overflow-hidden rounded-full bg-white/10", className)}>
       <span
-        className="absolute inset-y-0 left-0 rounded-full bg-ink transition-[width] duration-700"
+        className="grad-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-700"
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
     </span>
@@ -141,7 +143,7 @@ export function Card({
       onClick={onClick}
       className={cn(
         "panel",
-        interactive && "cursor-pointer transition-all duration-200 hover:border-line-3 hover:shadow-[0_1px_0_rgba(12,12,11,0.04),0_12px_28px_-18px_rgba(12,12,11,0.25)]",
+        interactive && "cursor-pointer transition-all duration-200 hover:border-accent/25 hover:shadow-[0_0_0_1px_rgba(95,227,238,0.12),0_22px_48px_-26px_rgba(95,227,238,0.4)]",
         className,
       )}
     >

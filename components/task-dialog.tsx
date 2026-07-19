@@ -10,7 +10,7 @@ import { Label } from "@/components/ui";
 const PRIORITIES: Priority[] = ["low", "med", "high", "critical"];
 
 const field =
-  "w-full rounded-md border border-line-2 bg-panel px-3 py-2 text-[14px] outline-none transition-colors focus:border-ink placeholder:text-ink-4";
+  "w-full rounded-md border border-line-2 bg-white/[0.03] px-3 py-2 text-[14px] outline-none transition-colors focus:border-accent placeholder:text-ink-4";
 
 export function TaskDialog({
   open,
@@ -68,7 +68,7 @@ export function TaskDialog({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/20 p-4 backdrop-blur-sm sm:p-10"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm sm:p-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -183,7 +183,7 @@ export function TaskDialog({
                         key={k}
                         onClick={() => setForm({ ...form, assigneeKind: k })}
                         className={`flex-1 py-2 font-mono text-[11px] uppercase tracking-wider transition-colors ${
-                          form.assigneeKind === k ? "bg-ink text-paper" : "text-ink-2 hover:bg-panel-2"
+                          form.assigneeKind === k ? "grad-cta" : "text-ink-2 hover:bg-white/5"
                         }`}
                       >
                         {k}
@@ -227,7 +227,7 @@ export function TaskDialog({
                 </button>
                 <button
                   onClick={save}
-                  className="rounded-md bg-ink px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-paper transition-opacity hover:opacity-90"
+                  className="grad-cta rounded-md px-4 py-2 font-mono text-[11px] uppercase tracking-wider"
                 >
                   {task ? "Save" : "Create"}
                 </button>

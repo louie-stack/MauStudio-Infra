@@ -37,8 +37,8 @@ function CardFace({ task, dragging }: { task: Task; dragging?: boolean }) {
       className={cn(
         "select-none rounded-lg border border-line bg-panel p-4 transition-shadow",
         dragging
-          ? "shadow-[0_20px_45px_-18px_rgba(12,12,11,0.45)] rotate-[1.5deg]"
-          : "hover:border-line-3 hover:shadow-[0_10px_24px_-18px_rgba(12,12,11,0.3)]",
+          ? "rotate-[1.5deg] border-accent/30 shadow-[0_0_0_1px_rgba(95,227,238,0.2),0_24px_50px_-18px_rgba(95,227,238,0.45)]"
+          : "hover:border-accent/25 hover:shadow-[0_16px_34px_-24px_rgba(95,227,238,0.4)]",
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -127,7 +127,7 @@ function Column({
         ref={setNodeRef}
         className={cn(
           "flex flex-1 flex-col gap-2.5 rounded-xl border border-dashed p-2.5 transition-colors",
-          isOver ? "border-line-3 bg-panel-2" : "border-line bg-panel-2/40",
+          isOver ? "border-accent/40 bg-accent/[0.06]" : "border-line bg-white/[0.015]",
         )}
       >
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>

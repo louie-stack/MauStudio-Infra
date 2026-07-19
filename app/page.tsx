@@ -90,11 +90,11 @@ export default function OverviewPage() {
               </div>
 
               {/* distribution bar */}
-              <div className="mt-6 flex h-2 w-full overflow-hidden rounded-full bg-line-2">
+              <div className="mt-6 flex h-2 w-full overflow-hidden rounded-full bg-white/10">
                 {colCounts.map((c, i) => (
                   <div
                     key={c.id}
-                    className={cn("h-full", i % 2 === 0 ? "bg-ink" : "bg-ink-3")}
+                    className={cn("h-full", i % 2 === 0 ? "grad-fill" : "bg-white/25")}
                     style={{ width: `${(c.n / total) * 100}%` }}
                     title={`${c.label}: ${c.n}`}
                   />

@@ -35,7 +35,7 @@ export default function WorkPage() {
       <PageHeader index="01 · Work" title="The board." lead="Drag work across stages. Every card ties to a client and an owner, human or agent.">
         <button
           onClick={() => openNew("backlog")}
-          className="flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-paper transition-opacity hover:opacity-90"
+          className="grad-cta flex items-center gap-2 rounded-md px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider"
         >
           <Plus size={15} /> New Task
         </button>

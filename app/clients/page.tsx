@@ -34,7 +34,7 @@ export default function ClientsPage() {
       <PageHeader index="02 · Clients" title="The roster." lead="Who the studio serves, what we run for them, and how each account is doing.">
         <button
           onClick={() => setAddOpen(true)}
-          className="flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-paper transition-opacity hover:opacity-90"
+          className="grad-cta flex items-center gap-2 rounded-md px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider"
         >
           <Plus size={15} /> Add Client
         </button>
@@ -46,7 +46,7 @@ export default function ClientsPage() {
           return (
             <Card key={c.id} interactive onClick={() => setSelected(c)} className="flex flex-col p-6">
               <div className="flex items-start justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-ink font-mono text-[15px] font-medium text-paper">
+                <div className="glass flex h-11 w-11 items-center justify-center rounded-md font-mono text-[15px] font-medium text-ink">
                   {c.code}
                 </div>
                 <span className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export default function ClientsPage() {
         {sel && (
           <>
             <motion.div
-              className="fixed inset-0 z-50 bg-ink/20 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setSelected(null)}
             />
@@ -98,7 +98,7 @@ export default function ClientsPage() {
             >
               <div className="flex items-center justify-between border-b border-line px-6 py-5">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-ink font-mono text-[14px] text-paper">{sel.code}</div>
+                  <div className="glass flex h-10 w-10 items-center justify-center rounded-md font-mono text-[14px] text-ink">{sel.code}</div>
                   <div>
                     <div className="text-lg font-semibold tracking-tight">{sel.name}</div>
                     <div className="mono-meta text-ink-3">{sel.sector}</div>
@@ -172,7 +172,7 @@ export default function ClientsPage() {
                   <div className="mt-3 space-y-1.5">
                     {tasks.filter((t) => t.clientId === sel.id && t.column !== "shipped").map((t) => (
                       <div key={t.id} className="flex items-center gap-3 rounded-md border border-line px-3.5 py-2.5">
-                        <span className={cn("h-1.5 w-1.5 rounded-full", t.column === "review" ? "bg-ink" : "bg-ink-3")} />
+                        <span className={cn("h-1.5 w-1.5 rounded-full", t.column === "review" ? "bg-accent glow-dot" : "bg-ink-3")} />
                         <span className="min-w-0 flex-1 truncate text-[13px]">{t.title}</span>
                         <span className="mono-meta capitalize text-ink-4">{t.column}</span>
                       </div>
@@ -185,7 +185,7 @@ export default function ClientsPage() {
               </div>
 
               <div className="border-t border-line px-6 py-4">
-                <Link href="/work" className="flex items-center justify-center gap-2 rounded-md bg-ink py-3 font-mono text-[11px] uppercase tracking-wider text-paper hover:opacity-90">
+                <Link href="/work" className="grad-cta flex items-center justify-center gap-2 rounded-md py-3 font-mono text-[11px] uppercase tracking-wider">
                   Open board <ArrowUpRight size={14} />
                 </Link>
               </div>

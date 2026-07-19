@@ -37,10 +37,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-line bg-panel">
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-line bg-panel/80 backdrop-blur-xl">
         {/* Brand */}
         <div className="flex items-center gap-3 border-b border-line px-5 py-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-ink font-mono text-[13px] font-medium text-paper">
+          <div className="grad-cta flex h-9 w-9 items-center justify-center rounded-md font-mono text-[13px] font-semibold">
             M/
           </div>
           <div className="leading-none">
@@ -61,16 +61,19 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "group flex items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] transition-colors",
-                      active ? "bg-ink text-paper" : "text-ink-2 hover:bg-panel-2 hover:text-ink",
+                      "group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] transition-colors",
+                      active
+                        ? "bg-white/[0.06] text-ink shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
+                        : "text-ink-2 hover:bg-white/[0.03] hover:text-ink",
                     )}
                   >
-                    <Icon size={16} strokeWidth={1.75} className={active ? "opacity-100" : "opacity-70"} />
+                    {active && <span className="grad-fill absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 rounded-full" />}
+                    <Icon size={16} strokeWidth={1.75} className={active ? "text-accent" : "opacity-70"} />
                     <span className="flex-1 font-medium tracking-tight">{item.label}</span>
                     <span
                       className={cn(
                         "font-mono text-[10px] tracking-widest",
-                        active ? "text-paper/50" : "text-ink-4",
+                        active ? "text-accent/70" : "text-ink-4",
                       )}
                     >
                       {item.code}
@@ -101,7 +104,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       {/* Main */}
       <div className="ml-[240px] flex min-h-screen min-w-0 flex-1 flex-col">
         {/* Top strip */}
-        <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-line bg-paper/85 px-8 backdrop-blur-md">
+        <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-line bg-paper/60 px-8 backdrop-blur-xl">
           <div className="mono-meta flex items-center gap-2">
             <span className="text-ink-4">MAU-OS</span>
             <span className="text-ink-4">/</span>

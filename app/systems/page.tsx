@@ -114,7 +114,7 @@ export default function SystemsPage() {
                       sys.deployments.map((id) => {
                         const c = clients.find((x) => x.id === id);
                         return (
-                          <span key={id} className="flex h-6 w-6 items-center justify-center rounded bg-ink font-mono text-[9px] text-paper" title={c?.name}>
+                          <span key={id} className="glass flex h-6 w-6 items-center justify-center rounded font-mono text-[9px] text-ink" title={c?.name}>
                             {c?.code ?? "?"}
                           </span>
                         );
