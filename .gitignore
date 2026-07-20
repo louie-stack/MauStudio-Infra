@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# deliverables build output — regenerate with deliverables/build.ps1.
+# the served copies under public/deliverables/ are committed.
+/deliverables/pricing-one-pager.html

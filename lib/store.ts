@@ -126,7 +126,18 @@ export const useStore = create<State>()(
     }),
     {
       name: "mau-studio-os-v1",
-      version: 1,
+      version: 4,
+      // Bump on every seed change: persisted state shadows the seed otherwise.
+      //   v2 · client roster replaced
+      //   v3 · Engagement Ladder system added
+      //   v4 · Engagement Ladder demo link (demoHref)
+      migrate: () => ({
+        tasks: TASKS,
+        clients: CLIENTS,
+        systems: SYSTEMS,
+        agents: AGENTS,
+        activity: ACTIVITY,
+      }),
       onRehydrateStorage: () => (state) => {
         if (state) state._hydrated = true;
       },

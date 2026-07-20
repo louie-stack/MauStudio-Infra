@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Layers } from "lucide-react";
+import { ArrowUpRight, Layers } from "lucide-react";
 import { useStore } from "@/lib/store";
 import type { SystemStatus } from "@/lib/types";
 import { cn, useMounted } from "@/lib/utils";
@@ -133,7 +133,24 @@ export default function SystemsPage() {
 
               <div className="mt-5 flex items-center justify-between rounded-lg bg-panel-2 px-4 py-3">
                 <span className={cn("mono-meta", "text-ink-2")}>{sys.model}</span>
-                {sys.demo && <span className="mono-meta text-ink-4">{sys.demo}</span>}
+                {sys.demo &&
+                  (sys.demoHref ? (
+                    <a
+                      href={sys.demoHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mono-meta group flex items-center gap-1.5 text-accent transition-colors hover:text-ink"
+                    >
+                      {sys.demo}
+                      <ArrowUpRight
+                        size={12}
+                        strokeWidth={2}
+                        className="transition-transform group-hover:-translate-y-px group-hover:translate-x-px"
+                      />
+                    </a>
+                  ) : (
+                    <span className="mono-meta text-ink-4">{sys.demo}</span>
+                  ))}
               </div>
             </Card>
             </motion.div>

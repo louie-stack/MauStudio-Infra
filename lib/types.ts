@@ -62,6 +62,7 @@ export interface ProductSystem {
   reusability: number; // 0-100, how packaged/repurposable
   model: string; // pricing / delivery model
   demo?: string;
+  demoHref?: string; // if set, the demo label opens this in a new tab
 }
 
 export type AgentStatus = "live" | "idle" | "paused";
